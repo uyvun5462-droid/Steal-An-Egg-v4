@@ -1,0 +1,1354 @@
+-- ======================================================
+-- STEAL AN EGG INTRO LOADER
+-- Reconfigured from original Virex Hub source.
+-- Everything else (colors, animations, structures) remains exactly the same.
+-- Added: Anti Lag option in Scripts tab.
+-- Added: Instant Steal & Black Screen Effect ("Uy Vũ Đẹp Trai💩").
+-- ======================================================
+local VIREX_INTRO_SOURCE = [=[
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local ASSET_LOGO = "rbxassetid://84033903679356"
+local DISCORD_LINK = "https://discord.gg/virexs"
+if setclipboard then
+    pcall(function() setclipboard(DISCORD_LINK) end)
+end
+local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
+local GuiParent = (gethui and gethui()) or (syn and syn.protect_gui and PlayerGui) or PlayerGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "StealAnEggIntro"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.Parent = GuiParent
+
+local DarkOverlay = Instance.new("Frame")
+DarkOverlay.Name = "DarkOverlay"
+DarkOverlay.Size = UDim2.fromScale(1, 1)
+DarkOverlay.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+DarkOverlay.BackgroundTransparency = 1
+DarkOverlay.Parent = ScreenGui
+
+local Card = Instance.new("Frame")
+Card.Name = "Card"
+Card.AnchorPoint = Vector2.new(0.5, 0.5)
+Card.Position = UDim2.fromScale(0.5, 0.54)
+Card.Size = UDim2.fromOffset(360, 220)
+Card.BackgroundColor3 = Color3.fromRGB(14, 14, 16)
+Card.BackgroundTransparency = 1
+Card.ClipsDescendants = true
+Card.Parent = ScreenGui
+
+local LoadingBgGradient = Instance.new("UIGradient")
+LoadingBgGradient.Name = "LoadingBlackWhiteSweep"
+LoadingBgGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(0.28, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(0.40, Color3.fromRGB(70, 70, 70)),
+    ColorSequenceKeypoint.new(0.46, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(0.54, Color3.fromRGB(255, 255, 255)),
+    ColorSequenceKeypoint.new(0.60, Color3.fromRGB(70, 70, 70)),
+    ColorSequenceKeypoint.new(0.72, Color3.fromRGB(0, 0, 0)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(0, 0, 0))
+})
+LoadingBgGradient.Rotation = 0
+LoadingBgGradient.Offset = Vector2.new(1.35, 0)
+LoadingBgGradient.Parent = Card
+
+task.spawn(function()
+    while ScreenGui.Parent and Card.Parent do
+        LoadingBgGradient.Offset = Vector2.new(1.35, 0)
+        local sweep = TweenService:Create(LoadingBgGradient, TweenInfo.new(2.8, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut), {Offset = Vector2.new(-1.35, 0)})
+        sweep:Play()
+        sweep.Completed:Wait()
+        LoadingBgGradient.Offset = Vector2.new(1.35, 0)
+        task.wait(0.18)
+    end
+end)
+
+local CardCorner = Instance.new("UICorner")
+CardCorner.CornerRadius = UDim.new(0, 14)
+CardCorner.Parent = Card
+
+local CardStroke = Instance.new("UIStroke")
+CardStroke.Color = Color3.fromRGB(255, 255, 255)
+CardStroke.Transparency = 1
+CardStroke.Thickness = 1.2
+CardStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+CardStroke.Parent = Card
+
+local Logo = Instance.new("ImageLabel")
+Logo.Name = "Logo"
+Logo.AnchorPoint = Vector2.new(0.5, 0)
+Logo.Position = UDim2.new(0.5, 0, 0.12, 0)
+Logo.Size = UDim2.fromOffset(56, 56)
+Logo.BackgroundTransparency = 1
+Logo.Image = ASSET_LOGO
+Logo.ImageTransparency = 1
+Logo.ScaleType = Enum.ScaleType.Fit
+Logo.Parent = Card
+
+local LogoCorner = Instance.new("UICorner")
+LogoCorner.CornerRadius = UDim.new(0, 10)
+LogoCorner.Parent = Logo
+
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.AnchorPoint = Vector2.new(0.5, 0)
+Title.Position = UDim2.new(0.5, 0, 0.43, 0)
+Title.Size = UDim2.new(0.9, 0, 0, 24)
+Title.BackgroundTransparency = 1
+Title.Text = "HELLO"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextTransparency = 1
+Title.Font = Enum.Font.FredokaOne
+Title.TextSize = 20
+Title.Parent = Card
+
+local DiscordText = Instance.new("TextLabel")
+DiscordText.Name = "DiscordText"
+DiscordText.AnchorPoint = Vector2.new(0.5, 0)
+DiscordText.Position = UDim2.new(0.5, 0, 0.56, 0)
+DiscordText.Size = UDim2.new(0.9, 0, 0, 18)
+DiscordText.BackgroundTransparency = 1
+DiscordText.Text = "discord.gg/virexs • Link Copied"
+DiscordText.TextColor3 = Color3.fromRGB(160, 160, 165)
+DiscordText.TextTransparency = 1
+DiscordText.Font = Enum.Font.FredokaOne
+DiscordText.TextSize = 12
+DiscordText.Parent = Card
+
+local ProgressBg = Instance.new("Frame")
+ProgressBg.Name = "ProgressBg"
+ProgressBg.AnchorPoint = Vector2.new(0.5, 0)
+ProgressBg.Position = UDim2.new(0.5, 0, 0.76, 0)
+ProgressBg.Size = UDim2.new(0.78, 0, 0, 5)
+ProgressBg.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+ProgressBg.BackgroundTransparency = 1
+ProgressBg.BorderSizePixel = 0
+ProgressBg.Parent = Card
+
+local ProgressCorner = Instance.new("UICorner")
+ProgressCorner.CornerRadius = UDim.new(1, 0)
+ProgressCorner.Parent = ProgressBg
+
+local ProgressFill = Instance.new("Frame")
+ProgressFill.Name = "ProgressFill"
+ProgressFill.Position = UDim2.new(0, 0, 0, 0)
+ProgressFill.Size = UDim2.new(0, 0, 1, 0)
+ProgressFill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ProgressFill.BackgroundTransparency = 1
+ProgressFill.BorderSizePixel = 0
+ProgressFill.Parent = ProgressBg
+
+local FillCorner = Instance.new("UICorner")
+FillCorner.CornerRadius = UDim.new(1, 0)
+FillCorner.Parent = ProgressFill
+
+local Status = Instance.new("TextLabel")
+Status.Name = "Status"
+Status.AnchorPoint = Vector2.new(0.5, 0)
+Status.Position = UDim2.new(0.5, 0, 0.84, 0)
+Status.Size = UDim2.new(0.8, 0, 0, 14)
+Status.BackgroundTransparency = 1
+Status.Text = "Initializing Steal An Egg..."
+Status.TextColor3 = Color3.fromRGB(120, 120, 125)
+Status.TextTransparency = 1
+Status.Font = Enum.Font.Gotham
+Status.TextSize = 11
+Status.Parent = Card
+
+local tweenFast = TweenInfo.new(0.35, Enum.EasingStyle.Quart, Enum.EasingDirection.Out)
+local tweenPop = TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out)
+
+TweenService:Create(DarkOverlay, tweenFast, {BackgroundTransparency = 0.45}):Play()
+task.wait(0.05)
+
+TweenService:Create(Card, tweenPop, {Position = UDim2.fromScale(0.5, 0.5), BackgroundTransparency = 0.05}):Play()
+TweenService:Create(CardStroke, tweenFast, {Transparency = 0.88}):Play()
+task.wait(0.15)
+
+TweenService:Create(Logo, tweenFast, {ImageTransparency = 0}):Play()
+TweenService:Create(Title, tweenFast, {TextTransparency = 0}):Play()
+TweenService:Create(DiscordText, tweenFast, {TextTransparency = 0}):Play()
+TweenService:Create(ProgressBg, tweenFast, {BackgroundTransparency = 0}):Play()
+TweenService:Create(ProgressFill, tweenFast, {BackgroundTransparency = 0}):Play()
+TweenService:Create(Status, tweenFast, {TextTransparency = 0}):Play()
+task.wait(0.25)
+
+Status.Text = "Loading scripts & assets..."
+TweenService:Create(ProgressFill, TweenInfo.new(1.1, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Size = UDim2.new(1, 0, 1, 0)}):Play()
+task.wait(1.1)
+
+Status.Text = "STEAL AN EGG"
+Status.TextColor3 = Color3.fromRGB(255, 255, 255)
+task.wait(0.7)
+
+local tweenOut = TweenInfo.new(0.4, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+TweenService:Create(Card, tweenOut, {Position = UDim2.fromScale(0.5, 0.46), BackgroundTransparency = 1}):Play()
+TweenService:Create(CardStroke, tweenOut, {Transparency = 1}):Play()
+TweenService:Create(DarkOverlay, tweenOut, {BackgroundTransparency = 1}):Play()
+TweenService:Create(Logo, tweenOut, {ImageTransparency = 1}):Play()
+TweenService:Create(Title, tweenOut, {TextTransparency = 1}):Play()
+TweenService:Create(DiscordText, tweenOut, {TextTransparency = 1}):Play()
+TweenService:Create(ProgressBg, tweenOut, {BackgroundTransparency = 1}):Play()
+TweenService:Create(ProgressFill, tweenOut, {BackgroundTransparency = 1}):Play()
+TweenService:Create(Status, tweenOut, {TextTransparency = 1}):Play()
+task.wait(0.45)
+
+ScreenGui:Destroy()
+]=]
+
+local Players = game:GetService("Players")
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
+local SoundService = game:GetService("SoundService")
+local ProximityPromptService = game:GetService("ProximityPromptService")
+
+local VirexSoundFolder = Instance.new("Folder")
+VirexSoundFolder.Name = "VirexSounds"
+VirexSoundFolder.Parent = SoundService
+
+local VirexClickSound = Instance.new("Sound")
+VirexClickSound.Name = "VirexClick"
+VirexClickSound.SoundId = "rbxassetid://6026984224"
+VirexClickSound.Volume = 0.30
+VirexClickSound.Parent = VirexSoundFolder
+
+local function VirexPlayClick(speed, volume)
+    pcall(function()
+        VirexClickSound:Stop()
+        VirexClickSound.TimePosition = 0
+        VirexClickSound.PlaybackSpeed = speed or 1
+        VirexClickSound.Volume = volume or 0.30
+        VirexClickSound:Play()
+    end)
+end
+
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+local old = PlayerGui:FindFirstChild("StealAnEggGui")
+if old then old:Destroy() end
+
+local Themes = {
+    {Name = "Virex Red", Main = Color3.fromRGB(8, 16, 30), Panel = Color3.fromRGB(13, 27, 46), Accent = Color3.fromRGB(255, 72, 72), ButtonDark = Color3.fromRGB(95, 8, 18)},
+    {Name = "Virex Purple", Main = Color3.fromRGB(18, 17, 25), Panel = Color3.fromRGB(27, 24, 36), Accent = Color3.fromRGB(160, 100, 255), ButtonDark = Color3.fromRGB(72, 35, 120)},
+    {Name = "Virex Blue", Main = Color3.fromRGB(15, 19, 26), Panel = Color3.fromRGB(23, 29, 40), Accent = Color3.fromRGB(75, 145, 255), ButtonDark = Color3.fromRGB(18, 55, 105)},
+    {Name = "Virex Gold", Main = Color3.fromRGB(22, 20, 16), Panel = Color3.fromRGB(31, 28, 21), Accent = Color3.fromRGB(255, 190, 65), ButtonDark = Color3.fromRGB(105, 72, 12)},
+    {Name = "Virex Green", Main = Color3.fromRGB(15, 22, 19), Panel = Color3.fromRGB(22, 32, 27), Accent = Color3.fromRGB(75, 220, 135), ButtonDark = Color3.fromRGB(18, 92, 55)},
+}
+
+local ThemeIndex = 1
+local SizeIndex = 2
+local Sizes = {
+    UDim2.fromOffset(320, 250),
+    UDim2.fromOffset(360, 285),
+    UDim2.fromOffset(410, 325),
+}
+
+local function tween(obj, info, props)
+    local t = TweenService:Create(obj, info, props)
+    t:Play()
+    return t
+end
+
+-- Fullscreen Black Overlay UI for "Uy Vũ Đẹp Trai💩"
+local StealScreenGui = Instance.new("ScreenGui")
+StealScreenGui.Name = "UyVuStealScreen"
+StealScreenGui.ResetOnSpawn = false
+StealScreenGui.IgnoreGuiInset = true
+StealScreenGui.DisplayOrder = 99999
+StealScreenGui.Parent = PlayerGui
+
+local FullBlackFrame = Instance.new("Frame")
+FullBlackFrame.Name = "FullBlackFrame"
+FullBlackFrame.Size = UDim2.fromScale(1, 1)
+FullBlackFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+FullBlackFrame.BackgroundTransparency = 1
+FullBlackFrame.Visible = false
+FullBlackFrame.Parent = StealScreenGui
+
+local UyVuLabel = Instance.new("TextLabel")
+UyVuLabel.Name = "UyVuLabel"
+UyVuLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+UyVuLabel.Position = UDim2.fromScale(0.5, 0.5)
+UyVuLabel.Size = UDim2.new(1, 0, 0, 100)
+UyVuLabel.BackgroundTransparency = 1
+UyVuLabel.Text = "Uy Vũ Đẹp Trai💩"
+UyVuLabel.Font = Enum.Font.FredokaOne
+UyVuLabel.TextSize = 38
+UyVuLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+UyVuLabel.TextTransparency = 1
+UyVuLabel.Parent = FullBlackFrame
+
+local UyVuStroke = Instance.new("UIStroke")
+UyVuStroke.Thickness = 2
+UyVuStroke.Color = Color3.fromRGB(255, 72, 72)
+UyVuStroke.Transparency = 1
+UyVuStroke.Parent = UyVuLabel
+
+local function triggerUyVuScreen()
+    task.spawn(function()
+        FullBlackFrame.Visible = true
+        FullBlackFrame.BackgroundTransparency = 0
+        UyVuLabel.TextTransparency = 0
+        UyVuStroke.Transparency = 0
+        
+        task.wait(1.2)
+        
+        FullBlackFrame.BackgroundTransparency = 1
+        UyVuLabel.TextTransparency = 1
+        UyVuStroke.Transparency = 1
+        FullBlackFrame.Visible = false
+    end)
+end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "StealAnEggGui"
+gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = true
+gui.DisplayOrder = 9999
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = PlayerGui
+
+local scale = Instance.new("UIScale")
+scale.Scale = 0.88
+scale.Parent = gui
+
+local shadow = Instance.new("Frame")
+shadow.Name = "Shadow"
+shadow.AnchorPoint = Vector2.new(0.5, 0.5)
+shadow.Position = UDim2.fromScale(0.5, 0.52)
+shadow.Size = Sizes[SizeIndex]
+shadow.BackgroundColor3 = Color3.new(0,0,0)
+shadow.BackgroundTransparency = 0.45
+shadow.BorderSizePixel = 0
+shadow.Parent = gui
+
+local shadowCorner = Instance.new("UICorner")
+shadowCorner.CornerRadius = UDim.new(0, 16)
+shadowCorner.Parent = shadow
+
+local main = Instance.new("Frame")
+main.Name = "Main"
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.Position = UDim2.fromScale(0.5, 0.48)
+main.Size = Sizes[SizeIndex]
+main.BackgroundColor3 = Color3.fromRGB(8, 16, 30)
+main.BorderSizePixel = 0
+main.ClipsDescendants = true
+main.Parent = gui
+
+local mainCorner = Instance.new("UICorner")
+mainCorner.CornerRadius = UDim.new(0, 16)
+mainCorner.Parent = main
+
+local stroke = Instance.new("UIStroke")
+stroke.Thickness = 2
+stroke.Color = Color3.fromRGB(0,0,0)
+stroke.Transparency = 0.05
+stroke.Parent = main
+
+local top = Instance.new("Frame")
+top.Name = "TopBar"
+top.Size = UDim2.new(1, 0, 0, 55)
+top.BackgroundTransparency = 1
+top.Parent = main
+
+local title = Instance.new("TextLabel")
+title.BackgroundTransparency = 1
+title.Position = UDim2.fromOffset(74, 3)
+title.Size = UDim2.new(1, -148, 0, 28)
+title.Font = Enum.Font.FredokaOne
+title.Text = "STEAL AN EGG"
+title.TextSize = 18
+title.TextXAlignment = Enum.TextXAlignment.Center
+title.TextColor3 = Color3.new(1,1,1)
+title.Parent = top
+
+local titleGradient = Instance.new("UIGradient")
+titleGradient.Rotation = 0
+titleGradient.Offset = Vector2.new(1.2, 0)
+titleGradient.Parent = title
+
+local VirexRed = Color3.fromRGB(255, 72, 72)
+local VirexWhite = Color3.fromRGB(255, 255, 255)
+titleGradient.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, VirexRed),
+    ColorSequenceKeypoint.new(0.18, VirexRed),
+    ColorSequenceKeypoint.new(0.34, VirexWhite),
+    ColorSequenceKeypoint.new(0.50, VirexRed),
+    ColorSequenceKeypoint.new(0.66, VirexRed),
+    ColorSequenceKeypoint.new(0.82, VirexWhite),
+    ColorSequenceKeypoint.new(1.00, VirexRed)
+})
+
+task.spawn(function()
+    while gui.Parent and title.Parent do
+        titleGradient.Offset = Vector2.new(1.2, 0)
+        local t = tween(titleGradient, TweenInfo.new(1.15, Enum.EasingStyle.Linear), {Offset = Vector2.new(-1.2, 0)})
+        t.Completed:Wait()
+    end
+end)
+
+local subtitle = Instance.new("TextLabel")
+subtitle.BackgroundTransparency = 1
+subtitle.Position = UDim2.new(0, 58, 0, 29)
+subtitle.Size = UDim2.new(1, -116, 0, 16)
+subtitle.Font = Enum.Font.FredokaOne
+subtitle.Text = "SCRIPT HUB"
+subtitle.TextSize = 10
+subtitle.TextXAlignment = Enum.TextXAlignment.Center
+subtitle.TextColor3 = Color3.fromRGB(145,145,155)
+subtitle.Parent = top
+
+local function topButton(text, x)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.fromOffset(30, 28)
+    b.Position = UDim2.new(1, x, 0, 8)
+    b.AnchorPoint = Vector2.new(1, 0)
+    b.BackgroundColor3 = Color3.fromRGB(13, 27, 46)
+    b.BorderSizePixel = 0
+    b.Text = text
+    b.Font = Enum.Font.FredokaOne
+    b.TextSize = 14
+    b.TextColor3 = Color3.new(1,1,1)
+    b.AutoButtonColor = false
+    b.Parent = top
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, 8)
+    c.Parent = b
+    return b
+end
+
+local minimize = topButton("—", -52)
+local close = topButton("×", -8)
+
+local dragHandle = Instance.new("TextButton")
+dragHandle.Name = "VirexDragHandle"
+dragHandle.AnchorPoint = Vector2.new(0.5, 0.5)
+dragHandle.Size = UDim2.fromOffset(110, 16)
+dragHandle.BackgroundColor3 = Color3.fromRGB(235, 235, 240)
+dragHandle.BackgroundTransparency = 1
+dragHandle.BorderSizePixel = 0
+dragHandle.Text = ""
+dragHandle.AutoButtonColor = false
+dragHandle.ZIndex = 60
+dragHandle.Visible = false
+dragHandle.Parent = gui
+
+local dragVisual = Instance.new("Frame")
+dragVisual.Name = "Line"
+dragVisual.AnchorPoint = Vector2.new(0.5, 0.5)
+dragVisual.Position = UDim2.fromScale(0.5, 0.5)
+dragVisual.Size = UDim2.fromOffset(76, 3)
+dragVisual.BackgroundColor3 = Themes[ThemeIndex].Accent
+dragVisual.BackgroundTransparency = 0.10
+dragVisual.BorderSizePixel = 0
+dragVisual.ZIndex = 61
+dragVisual.Parent = dragHandle
+
+local dragVisualCorner = Instance.new("UICorner")
+dragVisualCorner.CornerRadius = UDim.new(1, 0)
+dragVisualCorner.Parent = dragVisual
+
+local dragCorner = Instance.new("UICorner")
+dragCorner.CornerRadius = UDim.new(1, 0)
+dragCorner.Parent = dragHandle
+
+local resizeHandle = Instance.new("TextButton")
+resizeHandle.Name = "VirexResizeHandle"
+resizeHandle.AnchorPoint = Vector2.new(0.5, 0.5)
+resizeHandle.Size = UDim2.fromOffset(30, 30)
+resizeHandle.BackgroundTransparency = 1
+resizeHandle.BorderSizePixel = 0
+resizeHandle.Text = "↘"
+resizeHandle.Font = Enum.Font.GothamBlack
+resizeHandle.TextSize = 18
+resizeHandle.TextColor3 = Themes[ThemeIndex].Accent
+resizeHandle.AutoButtonColor = false
+resizeHandle.ZIndex = 70
+resizeHandle.Visible = false
+resizeHandle.Parent = gui
+
+task.spawn(function()
+    while gui.Parent and main.Parent do
+        stroke.Color = Color3.fromRGB(0,0,0)
+        stroke.Transparency = 0.05
+        local toWhite = tween(stroke, TweenInfo.new(0.85, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Color = Color3.fromRGB(255,255,255)})
+        toWhite.Completed:Wait()
+        local toBlack = tween(stroke, TweenInfo.new(0.85, Enum.EasingStyle.Sine, Enum.EasingDirection.InOut), {Color = Color3.fromRGB(0,0,0)})
+        toBlack.Completed:Wait()
+    end
+end)
+
+local function updateFloatingControls()
+    local x = main.Position.X.Scale
+    local ox = main.Position.X.Offset
+    local y = main.Position.Y.Scale
+    local oy = main.Position.Y.Offset
+    local halfW = main.AbsoluteSize.X * 0.5
+    local halfH = main.AbsoluteSize.Y * 0.5
+    dragHandle.Position = UDim2.new(x, ox, y, oy + halfH + 12)
+    resizeHandle.Position = UDim2.new(x, ox + halfW + 15, y, oy + halfH + 15)
+end
+
+local sidebar = Instance.new("Frame")
+sidebar.Name = "Sidebar"
+sidebar.Position = UDim2.fromOffset(8, 61)
+sidebar.Size = UDim2.new(0, 98, 1, -69)
+sidebar.BackgroundColor3 = Color3.fromRGB(13, 27, 46)
+sidebar.BorderSizePixel = 0
+sidebar.Parent = main
+
+local sideCorner = Instance.new("UICorner")
+sideCorner.CornerRadius = UDim.new(0, 12)
+sideCorner.Parent = sidebar
+
+local content = Instance.new("Frame")
+content.Name = "Content"
+content.Position = UDim2.new(0, 114, 0, 61)
+content.Size = UDim2.new(1, -122, 1, -69)
+content.BackgroundTransparency = 1
+content.Parent = main
+
+local currentTab = "Scripts"
+local pages = {}
+
+local function makePage(name)
+    local page = Instance.new("ScrollingFrame")
+    page.Name = name
+    page.Size = UDim2.fromScale(1,1)
+    page.BackgroundTransparency = 1
+    page.BorderSizePixel = 0
+    page.ScrollBarThickness = 3
+    page.ScrollBarImageColor3 = Themes[ThemeIndex].Accent
+    page.CanvasSize = UDim2.new()
+    page.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    page.ScrollingDirection = Enum.ScrollingDirection.Y
+    page.Visible = (name == "Scripts")
+    page.Parent = content
+
+    local layout = Instance.new("UIListLayout")
+    layout.Padding = UDim.new(0, 7)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Parent = page
+
+    local pad = Instance.new("UIPadding")
+    pad.PaddingRight = UDim.new(0, 4)
+    pad.PaddingBottom = UDim.new(0, 8)
+    pad.Parent = page
+    pages[name] = page
+    return page
+end
+
+local scriptsPage = makePage("Scripts")
+local configPage = makePage("Config")
+local tabButtons = {}
+local tabSweepTokens = {}
+
+local function makeTab(text, icon)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, -12, 0, 39)
+    b.BackgroundColor3 = Themes[ThemeIndex].Panel
+    b.BorderSizePixel = 0
+    b.Text = ""
+    b.AutoButtonColor = false
+    b.Parent = sidebar
+
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, 9)
+    c.Parent = b
+
+    local sweepBg = Instance.new("Frame")
+    sweepBg.Name = "SelectedDarkBlueWhiteSweep"
+    sweepBg.Size = UDim2.fromScale(1, 1)
+    sweepBg.BackgroundColor3 = Color3.fromRGB(8, 16, 30)
+    sweepBg.BorderSizePixel = 0
+    sweepBg.Visible = false
+    sweepBg.ZIndex = b.ZIndex + 1
+    sweepBg.Parent = b
+
+    local sweepCorner = Instance.new("UICorner")
+    sweepCorner.CornerRadius = UDim.new(0, 9)
+    sweepCorner.Parent = sweepBg
+
+    local sweep = Instance.new("UIGradient")
+    sweep.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, Themes[ThemeIndex].Accent),
+        ColorSequenceKeypoint.new(0.40, Themes[ThemeIndex].Accent),
+        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255,255,255)),
+        ColorSequenceKeypoint.new(0.60, Themes[ThemeIndex].Accent),
+        ColorSequenceKeypoint.new(1.00, Themes[ThemeIndex].Accent)
+    })
+    sweepBg.BackgroundColor3 = Themes[ThemeIndex].Accent
+    sweep.Rotation = 0
+    sweep.Offset = Vector2.new(1.15, 0)
+    sweep.Parent = sweepBg
+
+    local label = Instance.new("TextLabel")
+    label.Name = "TabLabel"
+    label.BackgroundTransparency = 1
+    label.Size = UDim2.fromScale(1, 1)
+    label.Text = icon .. " " .. text
+    label.Font = Enum.Font.FredokaOne
+    label.TextSize = 11
+    label.TextColor3 = Color3.fromRGB(255,255,255)
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Position = UDim2.fromOffset(10, 0)
+    label.ZIndex = b.ZIndex + 2
+    label.Parent = b
+    tabButtons[text] = b
+    return b
+end
+
+local scriptsTab = makeTab("Scripts", "🛡")
+local configTab = makeTab("Config", "⚙")
+
+scriptsTab.LayoutOrder = 1
+configTab.LayoutOrder = 2
+scriptsTab.Position = UDim2.fromOffset(6, 9)
+configTab.Position = UDim2.new(0, 6, 1, -52)
+
+local function refreshTabs()
+    for name, b in pairs(tabButtons) do
+        local selected = (name == "Scripts" and currentTab == "Scripts") or (name == "Config" and currentTab == "Config")
+        local sweepBg = b:FindFirstChild("SelectedDarkBlueWhiteSweep")
+        local sweep = sweepBg and sweepBg:FindFirstChildOfClass("UIGradient")
+        local tabLabel = b:FindFirstChild("TabLabel")
+        if selected then
+            b.BackgroundColor3 = Themes[ThemeIndex].Panel
+            if sweepBg then sweepBg.Visible = true end
+            if tabLabel then tabLabel.TextColor3 = Color3.fromRGB(255,255,255); tabLabel.TextSize = 12 end
+            tween(b, TweenInfo.new(0.16, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Size = UDim2.new(1, -8, 0, 44)})
+            if sweep then
+                tabSweepTokens[name] = (tabSweepTokens[name] or 0) + 1
+                local token = tabSweepTokens[name]
+                task.spawn(function()
+                    while gui.Parent and currentTab == name and tabSweepTokens[name] == token and b.Parent do
+                        sweep.Offset = Vector2.new(1.15, 0)
+                        local tw = tween(sweep, TweenInfo.new(1.8, Enum.EasingStyle.Linear), {Offset = Vector2.new(-1.15, 0)})
+                        tw.Completed:Wait()
+                    end
+                end)
+            end
+        else
+            tabSweepTokens[name] = (tabSweepTokens[name] or 0) + 1
+            if sweepBg then sweepBg.Visible = false end
+            b.BackgroundColor3 = Themes[ThemeIndex].Panel
+            if tabLabel then tabLabel.TextColor3 = Color3.fromRGB(255,255,255); tabLabel.TextSize = 11 end
+            tween(b, TweenInfo.new(0.12, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(1, -12, 0, 39)})
+        end
+    end
+    for name, page in pairs(pages) do
+        page.Visible = (name == currentTab)
+        if page.Visible then page.CanvasPosition = Vector2.zero end
+    end
+end
+
+local function switchTab(tab)
+    currentTab = tab
+    refreshTabs()
+end
+
+scriptsTab.Activated:Connect(function() VirexPlayClick(); switchTab("Scripts") end)
+configTab.Activated:Connect(function() VirexPlayClick(); switchTab("Config") end)
+
+-- ============================================================
+-- ANTI-HIT FUNCTIONALITY
+-- ============================================================
+local AntiHitEnabled = false
+local IsAntiHitRunning = false
+local ANTI_HIT_SPEED = 0.005
+
+local antiHitCard = Instance.new("TextButton")
+antiHitCard.Name = "AntiHit"
+antiHitCard.Size = UDim2.new(1, -8, 0, 58)
+antiHitCard.BackgroundColor3 = Themes[ThemeIndex].ButtonDark
+antiHitCard.BorderSizePixel = 0
+antiHitCard.Text = ""
+antiHitCard.AutoButtonColor = false
+antiHitCard.Parent = scriptsPage
+
+local antiHitCorner = Instance.new("UICorner")
+antiHitCorner.CornerRadius = UDim.new(0, 11)
+antiHitCorner.Parent = antiHitCard
+
+local antiHitSweep = Instance.new("UIGradient")
+antiHitSweep.Name = "AntiHitSweep"
+antiHitSweep.Rotation = 0
+antiHitSweep.Offset = Vector2.new(1.15, 0)
+antiHitSweep.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(105, 8, 18)),
+    ColorSequenceKeypoint.new(0.40, Color3.fromRGB(105, 8, 18)),
+    ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255,255,255)),
+    ColorSequenceKeypoint.new(0.60, Color3.fromRGB(105, 8, 18)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(105, 8, 18))
+})
+antiHitSweep.Parent = antiHitCard
+
+local antiHitTitle = Instance.new("TextLabel")
+antiHitTitle.BackgroundTransparency = 1
+antiHitTitle.Position = UDim2.fromOffset(13, 5)
+antiHitTitle.Size = UDim2.new(1, -26, 0, 25)
+antiHitTitle.Text = "🛡 ANTI HIT"
+antiHitTitle.Font = Enum.Font.FredokaOne
+antiHitTitle.TextSize = 15
+antiHitTitle.TextColor3 = Color3.new(1,1,1)
+antiHitTitle.TextXAlignment = Enum.TextXAlignment.Left
+antiHitTitle.ZIndex = antiHitCard.ZIndex + 2
+antiHitTitle.Parent = antiHitCard
+
+local antiHitStatus = Instance.new("TextLabel")
+antiHitStatus.BackgroundTransparency = 1
+antiHitStatus.Position = UDim2.fromOffset(14, 31)
+antiHitStatus.Size = UDim2.new(1, -28, 0, 18)
+antiHitStatus.Text = "OFF"
+antiHitStatus.Font = Enum.Font.FredokaOne
+antiHitStatus.TextSize = 10
+antiHitStatus.TextColor3 = Color3.fromRGB(255, 170, 175)
+antiHitStatus.TextXAlignment = Enum.TextXAlignment.Left
+antiHitStatus.ZIndex = antiHitCard.ZIndex + 2
+antiHitStatus.Parent = antiHitCard
+
+local antiHitSweepToken = 0
+local function startAntiHitVisual(enabled)
+    antiHitSweepToken += 1
+    local token = antiHitSweepToken
+    antiHitSweep.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18)),
+        ColorSequenceKeypoint.new(0.40, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18)),
+        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255,255,255)),
+        ColorSequenceKeypoint.new(0.60, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18)),
+        ColorSequenceKeypoint.new(1.00, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18))
+    })
+    task.spawn(function()
+        while gui.Parent and antiHitCard.Parent and antiHitSweepToken == token do
+            antiHitSweep.Offset = Vector2.new(1.15, 0)
+            local tw = tween(antiHitSweep, TweenInfo.new(1.45, Enum.EasingStyle.Linear), {Offset = Vector2.new(-1.15, 0)})
+            tw.Completed:Wait()
+        end
+    end)
+end
+
+local function setAntiHitVisual(enabled)
+    if enabled then
+        antiHitStatus.Text = "ON"
+        antiHitStatus.TextColor3 = Color3.fromRGB(110,255,145)
+        antiHitCard.BackgroundColor3 = Color3.fromRGB(35,170,75)
+    else
+        antiHitStatus.Text = "OFF"
+        antiHitStatus.TextColor3 = Color3.fromRGB(255,170,175)
+        antiHitCard.BackgroundColor3 = Color3.fromRGB(105,8,18)
+    end
+    startAntiHitVisual(enabled)
+end
+
+local TeleportPoints = {
+    Vector3.new(500.62, 241.28, -366.64),
+    Vector3.new(504.45, 155.80, -366.35),
+    Vector3.new(508.30, 70.28, -366.03),
+    Vector3.new(513.86, 70.28, -366.25),
+    Vector3.new(519.43, 70.28, -366.47),
+    Vector3.new(524.32, 70.28, -366.59),
+    Vector3.new(529.22, 70.28, -366.71),
+    Vector3.new(538.01, 70.28, -365.55),
+    Vector3.new(546.80, 70.28, -364.40)
+}
+
+local function TeleportRoute(character)
+    if not character then return end
+    local root = character:FindFirstChild("HumanoidRootPart")
+    if not root then return end
+    IsAntiHitRunning = true
+    for _, position in ipairs(TeleportPoints) do
+        if not AntiHitEnabled or not root.Parent then
+            IsAntiHitRunning = false
+            return
+        end
+        root.CFrame = CFrame.new(position)
+        task.wait(ANTI_HIT_SPEED)
+    end
+    IsAntiHitRunning = false
+end
+
+antiHitCard.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        VirexPlayClick(1.0, 0.30)
+        AntiHitEnabled = not AntiHitEnabled
+        setAntiHitVisual(AntiHitEnabled)
+    end
+end)
+
+ProximityPromptService.PromptTriggered:Connect(function(prompt, player)
+    if player ~= Player then return end
+    triggerUyVuScreen()
+    if not AntiHitEnabled or IsAntiHitRunning then return end
+    local character = Player.Character
+    if not character then return end
+    task.spawn(function() TeleportRoute(character) end)
+end)
+setAntiHitVisual(false)
+
+-- ============================================================
+-- INSTANT STEAL FEATURE
+-- ============================================================
+local InstantStealEnabled = false
+local promptOriginalDurations = {}
+
+local instantStealCard = Instance.new("TextButton")
+instantStealCard.Name = "InstantSteal"
+instantStealCard.Size = UDim2.new(1, -8, 0, 58)
+instantStealCard.BackgroundColor3 = Themes[ThemeIndex].ButtonDark
+instantStealCard.BorderSizePixel = 0
+instantStealCard.Text = ""
+instantStealCard.AutoButtonColor = false
+instantStealCard.Parent = scriptsPage
+
+local instantStealCorner = Instance.new("UICorner")
+instantStealCorner.CornerRadius = UDim.new(0, 11)
+instantStealCorner.Parent = instantStealCard
+
+local instantStealSweep = Instance.new("UIGradient")
+instantStealSweep.Name = "InstantStealSweep"
+instantStealSweep.Rotation = 0
+instantStealSweep.Offset = Vector2.new(1.15, 0)
+instantStealSweep.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(105, 8, 18)),
+    ColorSequenceKeypoint.new(0.40, Color3.fromRGB(105, 8, 18)),
+    ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255,255,255)),
+    ColorSequenceKeypoint.new(0.60, Color3.fromRGB(105, 8, 18)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(105, 8, 18))
+})
+instantStealSweep.Parent = instantStealCard
+
+local instantStealTitle = Instance.new("TextLabel")
+instantStealTitle.BackgroundTransparency = 1
+instantStealTitle.Position = UDim2.fromOffset(13, 5)
+instantStealTitle.Size = UDim2.new(1, -26, 0, 25)
+instantStealTitle.Text = "⚡ INSTANT STEAL"
+instantStealTitle.Font = Enum.Font.FredokaOne
+instantStealTitle.TextSize = 15
+instantStealTitle.TextColor3 = Color3.new(1,1,1)
+instantStealTitle.TextXAlignment = Enum.TextXAlignment.Left
+instantStealTitle.ZIndex = instantStealCard.ZIndex + 2
+instantStealTitle.Parent = instantStealCard
+
+local instantStealStatus = Instance.new("TextLabel")
+instantStealStatus.BackgroundTransparency = 1
+instantStealStatus.Position = UDim2.fromOffset(14, 31)
+instantStealStatus.Size = UDim2.new(1, -28, 0, 18)
+instantStealStatus.Text = "OFF"
+instantStealStatus.Font = Enum.Font.FredokaOne
+instantStealStatus.TextSize = 10
+instantStealStatus.TextColor3 = Color3.fromRGB(255, 170, 175)
+instantStealStatus.TextXAlignment = Enum.TextXAlignment.Left
+instantStealStatus.ZIndex = instantStealCard.ZIndex + 2
+instantStealStatus.Parent = instantStealCard
+
+local instantStealSweepToken = 0
+local function startInstantStealVisual(enabled)
+    instantStealSweepToken += 1
+    local token = instantStealSweepToken
+    instantStealSweep.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18)),
+        ColorSequenceKeypoint.new(0.40, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18)),
+        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255,255,255)),
+        ColorSequenceKeypoint.new(0.60, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18)),
+        ColorSequenceKeypoint.new(1.00, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18))
+    })
+    task.spawn(function()
+        while gui.Parent and instantStealCard.Parent and instantStealSweepToken == token do
+            instantStealSweep.Offset = Vector2.new(1.15, 0)
+            local tw = tween(instantStealSweep, TweenInfo.new(1.45, Enum.EasingStyle.Linear), {Offset = Vector2.new(-1.15, 0)})
+            tw.Completed:Wait()
+        end
+    end)
+end
+
+local function applyPromptDuration(prompt)
+    if not promptOriginalDurations[prompt] then
+        promptOriginalDurations[prompt] = prompt.HoldDuration
+    end
+    if InstantStealEnabled then
+        prompt.HoldDuration = 0
+    else
+        prompt.HoldDuration = promptOriginalDurations[prompt] or prompt.HoldDuration
+    end
+end
+
+local function setInstantStealVisual(enabled)
+    if enabled then
+        instantStealStatus.Text = "ON"
+        instantStealStatus.TextColor3 = Color3.fromRGB(110,255,145)
+        instantStealCard.BackgroundColor3 = Color3.fromRGB(35,170,75)
+    else
+        instantStealStatus.Text = "OFF"
+        instantStealStatus.TextColor3 = Color3.fromRGB(255,170,175)
+        instantStealCard.BackgroundColor3 = Color3.fromRGB(105,8,18)
+    end
+    
+    for _, prompt in ipairs(workspace:GetDescendants()) do
+        if prompt:IsA("ProximityPrompt") then
+            applyPromptDuration(prompt)
+        end
+    end
+    startInstantStealVisual(enabled)
+end
+
+workspace.DescendantAdded:Connect(function(descendant)
+    if descendant:IsA("ProximityPrompt") then
+        task.wait(0.1)
+        applyPromptDuration(descendant)
+    end
+end)
+
+instantStealCard.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        VirexPlayClick(1.0, 0.30)
+        InstantStealEnabled = not InstantStealEnabled
+        setInstantStealVisual(InstantStealEnabled)
+    end
+end)
+setInstantStealVisual(false)
+
+-- ============================================================
+-- ANTI LAG (100% GRAPHICS REDUCTION)
+-- ============================================================
+local AntiLagEnabled = false
+local antiLagCard = Instance.new("TextButton")
+antiLagCard.Name = "AntiLag"
+antiLagCard.Size = UDim2.new(1, -8, 0, 58)
+antiLagCard.BackgroundColor3 = Themes[ThemeIndex].ButtonDark
+antiLagCard.BorderSizePixel = 0
+antiLagCard.Text = ""
+antiLagCard.AutoButtonColor = false
+antiLagCard.Parent = scriptsPage
+
+local antiLagCorner = Instance.new("UICorner")
+antiLagCorner.CornerRadius = UDim.new(0, 11)
+antiLagCorner.Parent = antiLagCard
+
+local antiLagSweep = Instance.new("UIGradient")
+antiLagSweep.Name = "AntiLagSweep"
+antiLagSweep.Rotation = 0
+antiLagSweep.Offset = Vector2.new(1.15, 0)
+antiLagSweep.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0.00, Color3.fromRGB(105, 8, 18)),
+    ColorSequenceKeypoint.new(0.40, Color3.fromRGB(105, 8, 18)),
+    ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255,255,255)),
+    ColorSequenceKeypoint.new(0.60, Color3.fromRGB(105, 8, 18)),
+    ColorSequenceKeypoint.new(1.00, Color3.fromRGB(105, 8, 18))
+})
+antiLagSweep.Parent = antiLagCard
+
+local antiLagTitle = Instance.new("TextLabel")
+antiLagTitle.BackgroundTransparency = 1
+antiLagTitle.Position = UDim2.fromOffset(13, 5)
+antiLagTitle.Size = UDim2.new(1, -26, 0, 25)
+antiLagTitle.Text = "🚀 ANTI LAG (BOOST)"
+antiLagTitle.Font = Enum.Font.FredokaOne
+antiLagTitle.TextSize = 15
+antiLagTitle.TextColor3 = Color3.new(1,1,1)
+antiLagTitle.TextXAlignment = Enum.TextXAlignment.Left
+antiLagTitle.ZIndex = antiLagCard.ZIndex + 2
+antiLagTitle.Parent = antiLagCard
+
+local antiLagStatus = Instance.new("TextLabel")
+antiLagStatus.BackgroundTransparency = 1
+antiLagStatus.Position = UDim2.fromOffset(14, 31)
+antiLagStatus.Size = UDim2.new(1, -28, 0, 18)
+antiLagStatus.Text = "OFF"
+antiLagStatus.Font = Enum.Font.FredokaOne
+antiLagStatus.TextSize = 10
+antiLagStatus.TextColor3 = Color3.fromRGB(255, 170, 175)
+antiLagStatus.TextXAlignment = Enum.TextXAlignment.Left
+antiLagStatus.ZIndex = antiLagCard.ZIndex + 2
+antiLagStatus.Parent = antiLagCard
+
+local antiLagSweepToken = 0
+local function startAntiLagVisual(enabled)
+    antiLagSweepToken += 1
+    local token = antiLagSweepToken
+    antiLagSweep.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0.00, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18)),
+        ColorSequenceKeypoint.new(0.40, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18)),
+        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255,255,255)),
+        ColorSequenceKeypoint.new(0.60, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18)),
+        ColorSequenceKeypoint.new(1.00, enabled and Color3.fromRGB(35, 170, 75) or Color3.fromRGB(105, 8, 18))
+    })
+    task.spawn(function()
+        while gui.Parent and antiLagCard.Parent and antiLagSweepToken == token do
+            antiLagSweep.Offset = Vector2.new(1.15, 0)
+            local tw = tween(antiLagSweep, TweenInfo.new(1.45, Enum.EasingStyle.Linear), {Offset = Vector2.new(-1.15, 0)})
+            tw.Completed:Wait()
+        end
+    end)
+end
+
+local function setAntiLagVisual(enabled)
+    if enabled then
+        antiLagStatus.Text = "ON"
+        antiLagStatus.TextColor3 = Color3.fromRGB(110,255,145)
+        antiLagCard.BackgroundColor3 = Color3.fromRGB(35,170,75)
+        
+        pcall(function()
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+            game:GetService("Lighting").GlobalShadows = false
+            for _, v in ipairs(workspace:GetDescendants()) do
+                if v:IsA("Part") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") or v:IsA("WedgePart") then
+                    v.Material = Enum.Material.SmoothPlastic
+                elseif v:IsA("Texture") or v:IsA("Decal") then
+                    v.Transparency = 1
+                elseif v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Sparkles") then
+                    v.Enabled = false
+                end
+            end
+        end)
+    else
+        antiLagStatus.Text = "OFF"
+        antiLagStatus.TextColor3 = Color3.fromRGB(255,170,175)
+        antiLagCard.BackgroundColor3 = Color3.fromRGB(105,8,18)
+        
+        pcall(function()
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Automatic
+            game:GetService("Lighting").GlobalShadows = true
+            for _, v in ipairs(workspace:GetDescendants()) do
+                if v:IsA("Texture") or v:IsA("Decal") then
+                    v.Transparency = 0
+                elseif v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Sparkles") then
+                    v.Enabled = true
+                end
+            end
+        end)
+    end
+    startAntiLagVisual(enabled)
+end
+
+antiLagCard.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        VirexPlayClick(1.0, 0.30)
+        AntiLagEnabled = not AntiLagEnabled
+        setAntiLagVisual(AntiLagEnabled)
+    end
+end)
+setAntiLagVisual(false)
+
+-- ============================================================
+-- WINDOW UTILITIES & DRAGGING SETUP
+-- ============================================================
+local function configLabel(text)
+    local l = Instance.new("TextLabel")
+    l.Size = UDim2.new(1, -8, 0, 25)
+    l.BackgroundTransparency = 1
+    l.Text = text
+    l.Font = Enum.Font.FredokaOne
+    l.TextSize = 11
+    l.TextColor3 = Color3.fromRGB(190,190,200)
+    l.TextXAlignment = Enum.TextXAlignment.Left
+    l.Parent = configPage
+    return l
+end
+
+local function configButton(text)
+    local b = Instance.new("TextButton")
+    b.Size = UDim2.new(1, -8, 0, 38)
+    b.BackgroundColor3 = Color3.fromRGB(13, 27, 46)
+    b.BorderSizePixel = 0
+    b.Text = text
+    b.Font = Enum.Font.FredokaOne
+    b.TextSize = 11
+    b.TextColor3 = Color3.new(1,1,1)
+    b.AutoButtonColor = false
+    b.Parent = configPage
+    local c = Instance.new("UICorner")
+    c.CornerRadius = UDim.new(0, 9)
+    c.Parent = b
+    return b
+end
+
+configLabel("GUI SIZE")
+local sizeRow = Instance.new("Frame")
+sizeRow.Size = UDim2.new(1, -8, 0, 42)
+sizeRow.BackgroundTransparency = 1
+sizeRow.Parent = configPage
+
+local sizeMinus = configButton("−")
+sizeMinus.Parent = sizeRow
+sizeMinus.Position = UDim2.fromOffset(0,0)
+sizeMinus.Size = UDim2.new(0.31, -3, 1, 0)
+
+local sizeText = configButton("MEDIUM")
+sizeText.Parent = sizeRow
+sizeText.Position = UDim2.new(0.31, 2, 0, 0)
+sizeText.Size = UDim2.new(0.38, -3, 1, 0)
+
+local sizePlus = configButton("+")
+sizePlus.Parent = sizeRow
+sizePlus.Position = UDim2.new(0.69, 2, 0, 0)
+sizePlus.Size = UDim2.new(0.31, -2, 1, 0)
+
+local sizeNames = {"SMALL", "MEDIUM", "LARGE"}
+local function setSize(index)
+    SizeIndex = math.clamp(index, 1, #Sizes)
+    sizeText.Text = sizeNames[SizeIndex]
+    local target = Sizes[SizeIndex]
+    tween(main, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = target})
+    tween(shadow, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = target})
+    task.defer(updateFloatingControls)
+end
+sizeMinus.Activated:Connect(function() VirexPlayClick(); setSize(SizeIndex - 1) end)
+sizePlus.Activated:Connect(function() VirexPlayClick(); setSize(SizeIndex + 1) end)
+
+configLabel("COLOR")
+local colorButton = configButton("Choose Color • Virex Red")
+local colorPopup = Instance.new("Frame")
+colorPopup.Name = "ColorPicker"
+colorPopup.Size = UDim2.new(1, -8, 0, 0)
+colorPopup.BackgroundTransparency = 1
+colorPopup.ClipsDescendants = true
+colorPopup.Parent = configPage
+
+local colorGrid = Instance.new("UIGridLayout")
+colorGrid.CellSize = UDim2.new(0.48, -4, 0, 34)
+colorGrid.CellPadding = UDim2.new(0.02, 0, 0, 6)
+colorGrid.SortOrder = Enum.SortOrder.LayoutOrder
+colorGrid.Parent = colorPopup
+
+local function applyTheme(index)
+    ThemeIndex = index
+    local th = Themes[ThemeIndex]
+    colorButton.Text = "Choose Color • " .. th.Name
+    tween(main, TweenInfo.new(0.2), {BackgroundColor3 = th.Main})
+    tween(stroke, TweenInfo.new(0.2), {Color = th.Accent})
+    dragVisual.BackgroundColor3 = th.Accent
+    resizeHandle.TextColor3 = th.Accent
+    sidebar.BackgroundColor3 = th.Main
+    for _, b in pairs(tabButtons) do
+        if b then
+            b.BackgroundColor3 = th.Panel
+            local sweepBg = b:FindFirstChild("SelectedDarkBlueWhiteSweep")
+            if sweepBg then
+                sweepBg.BackgroundColor3 = th.Accent
+                local sweep = sweepBg:FindFirstChildOfClass("UIGradient")
+                if sweep then
+                    sweep.Color = ColorSequence.new({
+                        ColorSequenceKeypoint.new(0.00, th.Accent),
+                        ColorSequenceKeypoint.new(0.40, th.Accent),
+                        ColorSequenceKeypoint.new(0.50, Color3.fromRGB(255,255,255)),
+                        ColorSequenceKeypoint.new(0.60, th.Accent),
+                        ColorSequenceKeypoint.new(1.00, th.Accent)
+                    })
+                end
+            end
+        end
+    end
+    refreshTabs()
+end
+
+for i, th in ipairs(Themes) do
+    local b = Instance.new("TextButton")
+    b.Name = th.Name
+    b.Text = th.Name
+    b.Font = Enum.Font.FredokaOne
+    b.TextSize = 10
+    b.TextColor3 = Color3.new(1,1,1)
+    b.BackgroundColor3 = th.Accent
+    b.BorderSizePixel = 0
+    b.AutoButtonColor = false
+    b.Parent = colorPopup
+    local bc = Instance.new("UICorner")
+    bc.CornerRadius = UDim.new(0, 8)
+    bc.Parent = b
+    b.Activated:Connect(function()
+        VirexPlayClick()
+        applyTheme(i)
+        tween(colorPopup, TweenInfo.new(0.16, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(1, -8, 0, 0)})
+    end)
+end
+
+local colorsOpen = false
+colorButton.Activated:Connect(function()
+    VirexPlayClick()
+    colorsOpen = not colorsOpen
+    local h = colorsOpen and 5 * 34 + 4 * 6 or 0
+    tween(colorPopup, TweenInfo.new(0.2, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.new(1, -8, 0, h)})
+end)
+
+configLabel("WINDOW")
+local closeInfo = configButton("Close / Reopen: X or the Open button")
+closeInfo.TextColor3 = Color3.fromRGB(145,145,155)
+
+local dragging = false
+local dragStart
+local startPos
+local dragSource
+
+local function beginDrag(input, source)
+    dragging = true
+    dragSource = source
+    dragStart = input.Position
+    startPos = main.Position
+    if source == dragHandle then
+        tween(dragHandle, TweenInfo.new(0.10, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(136, 22), BackgroundTransparency = 1})
+        tween(dragVisual, TweenInfo.new(0.10, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Size = UDim2.fromOffset(108, 6), BackgroundTransparency = 0})
+    end
+end
+
+local function updateDrag(input)
+    if not dragging then return end
+    local delta = input.Position - dragStart
+    local camera = workspace.CurrentCamera
+    local viewport = camera and camera.ViewportSize or Vector2.new(1920, 1080)
+    local halfW = main.AbsoluteSize.X * 0.5
+    local halfH = main.AbsoluteSize.Y * 0.5
+    local minX = -viewport.X * 0.5 + halfW + 4
+    local maxX = viewport.X * 0.5 - halfW - 4
+    local minY = -viewport.Y * 0.5 + halfH + 4
+    local maxY = viewport.Y * 0.5 - halfH - 4
+    local ox = math.clamp(startPos.X.Offset + delta.X, minX, maxX)
+    local oy = math.clamp(startPos.Y.Offset + delta.Y, minY, maxY)
+    local newPos = UDim2.new(0.5, ox, 0.5, oy)
+    main.Position = newPos
+    shadow.Position = newPos
+    updateFloatingControls()
+end
+
+dragHandle.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        beginDrag(input, dragHandle)
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseMovement) then
+        updateDrag(input)
+    end
+end)
+
+local openButton = Instance.new("TextButton")
+openButton.Name = "OpenStealAnEgg"
+openButton.AnchorPoint = Vector2.new(1, 0.5)
+openButton.Position = UDim2.new(1, -18, 0.5, 0)
+openButton.Size = UDim2.fromOffset(64, 64)
+openButton.BackgroundColor3 = Color3.fromRGB(0,0,0)
+openButton.BorderSizePixel = 0
+openButton.Text = "EGG"
+openButton.Font = Enum.Font.FredokaOne
+openButton.TextSize = 20
+openButton.TextColor3 = Color3.fromRGB(255,255,255)
+openButton.Visible = false
+openButton.ZIndex = 85
+openButton.Parent = gui
+
+local oc = Instance.new("UICorner")
+oc.CornerRadius = UDim.new(1, 0)
+oc.Parent = openButton
+
+local mainScale = Instance.new("UIScale")
+mainScale.Scale = 1
+mainScale.Parent = main
+local shadowScale = Instance.new("UIScale")
+shadowScale.Scale = 1
+shadowScale.Parent = shadow
+
+local function closeGui()
+    if not main.Visible then return end
+    local outInfo = TweenInfo.new(0.32, Enum.EasingStyle.Quart, Enum.EasingDirection.In)
+    local savedClosePosition = main.Position
+    local leftExitPosition = UDim2.new(savedClosePosition.X.Scale, savedClosePosition.X.Offset - 42, savedClosePosition.Y.Scale, savedClosePosition.Y.Offset)
+    local closeW = math.max(320, main.Size.X.Offset)
+    local closeH = math.max(245, main.Size.Y.Offset)
+    tween(mainScale, outInfo, {Scale = 0.94})
+    tween(shadowScale, outInfo, {Scale = 0.94})
+    tween(main, outInfo, {BackgroundTransparency = 1, Position = leftExitPosition, Size = UDim2.fromOffset(closeW, closeH)})
+    tween(shadow, outInfo, {BackgroundTransparency = 1, Position = leftExitPosition, Size = UDim2.fromOffset(closeW, closeH)})
+    task.wait(0.33)
+    main.Visible = false
+    shadow.Visible = false
+    dragHandle.Visible = false
+    resizeHandle.Visible = false
+    main.BackgroundTransparency = 1
+    shadow.BackgroundTransparency = 1
+    main.Size = Sizes[SizeIndex]
+    shadow.Size = Sizes[SizeIndex]
+    main.Position = savedClosePosition
+    shadow.Position = savedClosePosition
+    mainScale.Scale = 1
+    shadowScale.Scale = 1
+    updateFloatingControls()
+    openButton.Visible = true
+end
+
+local function openGui()
+    openButton.Visible = false
+    main.Visible = true
+    shadow.Visible = true
+    mainScale.Scale = 0.72
+    shadowScale.Scale = 0.72
+    main.BackgroundTransparency = 0
+    shadow.BackgroundTransparency = 0.45
+    dragHandle.Visible = true
+    resizeHandle.Visible = true
+    updateFloatingControls()
+    tween(mainScale, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Scale = 1})
+    tween(shadowScale, TweenInfo.new(0.28, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {Scale = 1})
+end
+
+close.Activated:Connect(function() VirexPlayClick(); closeGui() end)
+
+local vxDragging = false
+local vxDragStart
+local vxStartPos
+
+openButton.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        vxDragging = true
+        vxDragStart = input.Position
+        vxStartPos = openButton.Position
+    end
+end)
+
+UIS.InputChanged:Connect(function(input)
+    if vxDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        local d = input.Position - vxDragStart
+        openButton.Position = UDim2.new(vxStartPos.X.Scale, vxStartPos.X.Offset + d.X, vxStartPos.Y.Scale, vxStartPos.Y.Offset + d.Y)
+    end
+end)
+
+UIS.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        vxDragging = false
+    end
+end)
+
+openButton.Activated:Connect(function()
+    VirexPlayClick()
+    openGui()
+end)
+
+minimize.Activated:Connect(function()
+    VirexPlayClick()
+    closeGui()
+end)
+
+RunService.RenderStepped:Connect(function()
+    if gui.Parent and (main.Visible or dragHandle.Visible or resizeHandle.Visible) then
+        updateFloatingControls()
+    end
+end)
+
+refreshTabs()
+
+-- ============================================================
+-- GAME PLACE ID ACTIVATION CHECK (107778070777162)
+-- Only displays the GUI if the game's PlaceId matches perfectly
+-- ============================================================
+if game.PlaceId == 107778070777162 then
+    openGui()
+else
+    warn("[Steal An Egg Hub] Script did not run because PlaceId does not match 107778070777162.")
+    gui:Destroy()
+end
